@@ -1,6 +1,5 @@
 {
   "name": "vscode-wso2-sample",
-  "workspaceFolder": "/workspace",
   "dockerFile": "Dockerfile",
   // Connect as an existing non-root user in the container.
   // On Linux, by default, the container user's UID/GID will be updated to match your local user.
@@ -10,9 +9,6 @@
     "JAVA_HOME": "/opt/sdkman/candidates/java/current"
   },
   "runArgs": [
-    // Mounts the project folder to '/workspace'
-    "--mount",
-    "type=bind,source=${localWorkspaceFolder},target=/workspace",
     // VSCode server extensions cache
     "--mount",
     "type=volume,source=vscode-server-extensions-cache,target=/home/user/.vscode-server/extensionsCache",
@@ -28,23 +24,29 @@
     "/bin/bash",
     "-i",
     "-c",
-    "export JAVA_VERSION=11.0; export JAVA_INSTALL_VERSION=$(sdk list java | grep -o \"${JAVA_VERSION}\\.[0-9\\.]*hs-adpt\" | head -1); sdk install java $JAVA_INSTALL_VERSION || true; ln -s /opt/sdkman/candidates/java/$JAVA_INSTALL_VERSION /opt/sdkman/candidates/java/$JAVA_VERSION; export JAVA_VERSION=8.0; export JAVA_INSTALL_VERSION=$(sdk list java | grep -o \"${JAVA_VERSION}\\.[0-9\\.]*hs-adpt\" | head -1); yes | sdk install java $JAVA_INSTALL_VERSION || true; ln -s /opt/sdkman/candidates/java/$JAVA_INSTALL_VERSION /opt/sdkman/candidates/java/$JAVA_VERSION; export MAVEN_VERSION=3.6; export MAVEN_INSTALL_VERSION=$(sdk list maven | grep -o \"${MAVEN_VERSION}\\.[0-9\\.]*\" | head -1); sdk install maven $MAVEN_INSTALL_VERSION || true; sudo ln -s /opt/sdkman/candidates/maven/current/bin/mvn /usr/local/bin/mvn"
+    "export JAVA_VERSION=11.0; export JAVA_INSTALL_VERSION=$(sdk list java | grep -o \"${JAVA_VERSION}\\.[0-9\\.]*hs-adpt\" | head -1); sdk install java $JAVA_INSTALL_VERSION || true; ln -s /opt/sdkman/candidates/java/$JAVA_INSTALL_VERSION /opt/sdkman/candidates/java/$JAVA_VERSION; export JAVA_VERSION=8.0; export JAVA_INSTALL_VERSION=$(sdk list java | grep -o \"${JAVA_VERSION}\\.[0-9\\.]*hs-adpt\" | head -1); true | sdk install java $JAVA_INSTALL_VERSION || true; ln -s /opt/sdkman/candidates/java/$JAVA_INSTALL_VERSION /opt/sdkman/candidates/java/$JAVA_VERSION; export MAVEN_VERSION=3.6; export MAVEN_INSTALL_VERSION=$(sdk list maven | grep -o \"${MAVEN_VERSION}\\.[0-9\\.]*\" | head -1); sdk install maven $MAVEN_INSTALL_VERSION || true; sudo ln -s /opt/sdkman/candidates/maven/current/bin/mvn /usr/local/bin/mvn"
   ],
   "extensions": [
-    // WSO2
-    "wso2.wso2ei",
+    // GIT support
+    "mhutchie.git-graph",
+    "eamodio.gitlens",
+    // History support
+    "xyz.local-history",
     // Spring boot support
     "pivotal.vscode-boot-dev-pack",
+    // JavaDoc
+    "madhavd1.javadoc-tools",
     // Java Support
+    "dgileadi.java-decompiler",
     "vscjava.vscode-java-pack",
-    // XML Support
-    "redhat.vscode-xml"
+    // WSO2
+    "wso2.wso2ei"
   ],
   "settings": {
     // Increase memory for Java Language Server
     "java.jdt.ls.vmargs": "-noverify -Xmx3G -Xss128M -XX:+UseG1GC -XX:+UseStringDeduplication",
     // Configure spring-boot 
-    "spring-boot.ls.java.home": "/opt/sdkman/candidates/java/8.0",
+    "spring-boot.ls.java.home": "/opt/sdkman/candidates/java/current",
     // Configure Maven
     "maven.executable.path": "/opt/sdkman/candidates/maven/current/bin/mvn",
     "maven.terminal.useJavaHome": true,
@@ -61,13 +63,46 @@
       }
     ],
     "java.home": "/opt/sdkman/candidates/java/11.0",
-    // Configure glob patterns for excluding files and folders
+    // Exclude folders from import via glob patterns.
+    "java.import.exclusions": [
+      "**/node_modules/**",
+      "**/.metadata/**",
+      "**/archetype-resources/**",
+      "**/META-INF/maven/**",
+      "**/NBG-Server/**"
+    ],
+    // Configure glob patterns of file paths to exclude from file watching.
+    "files.watcherExclude": {
+      // Default values
+      "**/.git/objects/**": true,
+      "**/.git/subtree-cache/**": true,
+      "**/node_modules/**": true,
+      "**/.hg/store/**": true
+      // Extra
+    },
+    // Configure glob patterns for excluding files and folders.
     "files.exclude": {
+      // Default values
+      "**/.git": true,
+      "**/.svn": true,
+      "**/.hg": true,
+      "**/CVS": true,
+      "**/.DS_Store": true,
+      // Extra
+      "**/.mvn": true,
       "**/.classpath": true,
       "**/.project": true,
       "**/.settings": true,
-      "**/.factorypath": true,
-      "**/.history": true
+      "**/.factorypath": true
+    },
+    // Configure glob patterns for excluding files and folders in fulltext searches and quick open. Inherits all glob patterns from the `files.exclude` setting.
+    "search.exclude": {
+      // Default values
+      "**/node_modules": true,
+      "**/bower_components": true,
+      "**/*.code-search": true,
+      // Extra
+      "**/target/**": true
     },
     // Ensure VS Code uses the right one for terminals and tasks.
     "terminal.integrated.shell.linux": "/bin/bash",
@@ -75,6 +110,10 @@
     "terminal.integrated.shellArgs.linux": [
       "-i"
     ],
+    // Disable Minimap
+    "editor.minimap.enabled": false,
+    // Custom local history path
+    "local-history.path": "/tmp",
     // Show control characters
     "editor.renderControlCharacters": true,
     // Do not use current file indentation
@@ -86,6 +125,10 @@
     // Format code on file save
     "editor.formatOnSave": true,
     // Format code while typing
-    "editor.formatOnType": true
+    "editor.formatOnType": true,
+    // Disable automatic port forwarding
+    "remote.autoForwardPorts": false,
+    // Disable preview editor
+    "workbench.editor.enablePreview": false
   }
 }
