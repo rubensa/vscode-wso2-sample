@@ -5,6 +5,10 @@
   // Connect as an existing non-root user in the container.
   // On Linux, by default, the container user's UID/GID will be updated to match your local user.
   "remoteUser": "user",
+  "remoteEnv": {
+    // Java HOME
+    "JAVA_HOME": "/opt/sdkman/candidates/java/current"
+  },
   "runArgs": [
     // Mounts the project folder to '/workspace'
     "--mount",
@@ -24,7 +28,7 @@
     "/bin/bash",
     "-i",
     "-c",
-    "export JAVA_VERSION=11.0; export JAVA_INSTALL_VERSION=$(sdk list java | grep -o \"${JAVA_VERSION}\\.[0-9\\.]*hs-adpt\" | head -1); sdk install java $JAVA_INSTALL_VERSION || true; ln -s /opt/sdkman/candidates/java/$JAVA_INSTALL_VERSION /opt/sdkman/candidates/java/$JAVA_VERSION; export JAVA_VERSION=8.0; export JAVA_INSTALL_VERSION=$(sdk list java | grep -o \"${JAVA_VERSION}\\.[0-9\\.]*hs-adpt\" | head -1); yes | sdk install java $JAVA_INSTALL_VERSION || true; ln -s /opt/sdkman/candidates/java/$JAVA_INSTALL_VERSION /opt/sdkman/candidates/java/$JAVA_VERSION; export MAVEN_VERSION=3.6; export MAVEN_INSTALL_VERSION=$(sdk list maven | grep -o \"${MAVEN_VERSION}\\.[0-9\\.]*\" | head -1); sdk install maven $MAVEN_INSTALL_VERSION || true;"
+    "export JAVA_VERSION=11.0; export JAVA_INSTALL_VERSION=$(sdk list java | grep -o \"${JAVA_VERSION}\\.[0-9\\.]*hs-adpt\" | head -1); sdk install java $JAVA_INSTALL_VERSION || true; ln -s /opt/sdkman/candidates/java/$JAVA_INSTALL_VERSION /opt/sdkman/candidates/java/$JAVA_VERSION; export JAVA_VERSION=8.0; export JAVA_INSTALL_VERSION=$(sdk list java | grep -o \"${JAVA_VERSION}\\.[0-9\\.]*hs-adpt\" | head -1); yes | sdk install java $JAVA_INSTALL_VERSION || true; ln -s /opt/sdkman/candidates/java/$JAVA_INSTALL_VERSION /opt/sdkman/candidates/java/$JAVA_VERSION; export MAVEN_VERSION=3.6; export MAVEN_INSTALL_VERSION=$(sdk list maven | grep -o \"${MAVEN_VERSION}\\.[0-9\\.]*\" | head -1); sdk install maven $MAVEN_INSTALL_VERSION || true; sudo ln -s /opt/sdkman/candidates/maven/current/bin/mvn /usr/local/bin/mvn"
   ],
   "extensions": [
     // WSO2
